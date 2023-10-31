@@ -27,7 +27,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker -H tcp://192.168.43.130:2375 build -t ${dockerImageTag} Backend/crowdapp"
+                    sh "docker -H tcp://192.168.43.130:2375 build -t ${dockerImageTag} ."
                 }
             }
         }
