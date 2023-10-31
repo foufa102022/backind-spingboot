@@ -38,7 +38,7 @@ pipeline {
                     echo "Docker Container spring boot container deleting..."
                     sh "docker -H tcp://192.168.43.130:2375 rm -f spring-cont"
                     echo "Docker Image Tag Name: ${dockerImageTag}"
-                    sh "docker -H tcp://192.168.43.130:2375 run --name spring-cont -d -p 2222:2222 ${dockerImageTag}"
+                    sh "docker -H tcp://192.168.43.130:2375 run --name spring-cont -d -p 2222:8080 ${dockerImageTag}"
                 }
             }
         }
