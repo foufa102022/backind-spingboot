@@ -1,25 +1,16 @@
 pipeline {
-    agent any
-
+    agent any 
     environment {
-        mvnHome = tool 'maven-3.9.4'
-        dockerHome = tool 'MyDocker'
-        dockerImageTag = "spring-img${env.BUILD_NUMBER}"
+        DOCKERHUB_CREDENTIALS = credentials('DockerHub')
     }
 
     stages {
-        stage('Clone Repo') {
+        stage('Build and Package') {
             steps {
-                script {
-                    git 'https://github.com/foufa102022/backind-spingboot.git'
-                }
-            }
-        }
-
-        stage('Build Project') {
-            steps {
-                script {
-                    sh "'${mvnHome}/bin/mvn' -B -DskipTests clean package"
+                dir('Backend/crowdapp') {
+                    script {
+                        sh './mvnw -DskipTests clean install --fail-at-end'
+                    }
                 }
             }
         }
@@ -27,7 +18,28 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker -H tcp://192.168.43.130:2375 build -t ${dockerImageTag} ."
+                    sh '''
+                       docker build -t spring-img .
+                       docker tag spring-img:latest chetouiiftikhar/spring-img:${BUILD_ID}
+                    '''
+                }
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    sh '''
+                        docker push chetouiiftikhar/spring-img:${BUILD_ID}
+                    '''
                 }
             }
         }
@@ -35,10 +47,9 @@ pipeline {
         stage('Deploy Docker Image') {
             steps {
                 script {
-                    echo "Docker Container spring boot container deleting..."
-                    sh "docker -H tcp://192.168.43.130:2375 rm -f spring-cont"
-                    echo "Docker Image Tag Name: ${dockerImageTag}"
-                    sh "docker -H tcp://192.168.43.130:2375 run --name spring-cont -d -p 2222:8080 ${dockerImageTag}"
+                    echo "Docker Container back_container deleting..."
+                    sh "docker rm -f back_container"
+                    sh "docker run -p 8888:8080 -dit --name back_container chetouiiftikhar/spring-img:${BUILD_ID}"
                 }
             }
         }
