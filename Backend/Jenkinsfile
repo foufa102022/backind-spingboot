@@ -1,11 +1,13 @@
 pipeline {
-    agent any 
+    agent any
+
     stages {
         stage('Build and Package') {
             steps {
                 dir('Backend/crowdapp') {
                     script {
-                        sh './mvnw -DskipTests clean install --fail-at-end'
+                        // Exécuter la commande Maven pour construire le projet Spring Boot
+                        sh 'mvnw -DskipTests clean install --fail-at-end'
                     }
                 }
             }
@@ -14,22 +16,18 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh '''
-                       docker build -t spring-img Backend/crowdapp
-                       docker tag spring-img:latest chetouiiftikhar/spring-img:${BUILD_ID}
-                    '''
+                    // Exécuter la commande pour construire l'image Docker
+                    sh 'docker rm -f back_container && true' // Supprimer le conteneur Docker s'il existe
+                    sh 'docker build -t spring-img .'
                 }
             }
         }
 
-
         stage('Deploy Docker Image') {
             steps {
                 script {
-                    echo "Docker Container back_container deleting..."
-                    sh "docker rm -f back_container"
-                     echo "Docker Container back_container creating..."
-                    sh "docker run -p 8888:8080 -dit --name back_container chetouiiftikhar/spring-img:${BUILD_ID}"
+                    // Exécuter la commande pour exécuter un conteneur Docker
+                    sh 'docker run -p 8888:8080 -dit --name back_container chetouiiftikhar/spring-img:$BUILD_ID'
                 }
             }
         }
