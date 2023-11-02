@@ -1,35 +1,37 @@
 pipeline {
     agent any
-
+      def mvnHome = tool 'maven-3.9.5'
     stages {
         stage('Build and Package') {
             steps {
                     script {
                         // Exécuter la commande Maven pour construire le projet Spring Boot
-                          sh 'cd Backend/crowdapp'
-                          sh 'ls'
-                          sh './mvnw  clean install'
+                        //  sh 'cd Backend/crowdapp'
+                       //   sh 'ls'
+                        //  sh './mvnw  clean install'
+                          sh cd /backend/crowdapp
+                          sh "'${mvnHome}/bin/mvn' -B -DskipTests clean install"
                     }
                 }
             }
-        stage('Build Docker Image') {
-            steps {
-                script {
+       // stage('Build Docker Image') {
+         //   steps {
+//script {
                     // Exécuter la commande pour construire l'image Docker
-                    sh 'docker build -t spring-img .'
-                }
-            }
-        }
+                 //   sh 'docker build -t spring-img .'
+//}
+           // }
+      //  }
 
-        stage('Deploy Docker Image') {
-            steps {
-                script {
+       // stage('Deploy Docker Image') {
+           // steps {
+             //   script {
                     // Exécuter la commande pour exécuter un conteneur Docker
-                    echo "Docker Container back_container deleting..."
-                    sh "docker rm -f back_container && true" // Supprimer le conteneur Docker s'il existe
-                    sh 'docker run -p 8888:8080 -dit --name back_container spring-img:latest'
-                }
-            }
-        }
-    }
+                  //  echo "Docker Container back_container deleting..."
+                  //  sh "docker rm -f back_container && true" // Supprimer le conteneur Docker s'il existe
+                  //  sh 'docker run -p 8888:8080 -dit --name back_container spring-img:latest'
+//}
+           // }
+       //}
+   }
 }
