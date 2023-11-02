@@ -1,48 +1,46 @@
-node {
-    def mvnHome = tool 'maven-3.9.5'
-    def dockerImage = 'spring-img'
-    def dockerImageTag = "chetouiiftikhar/spring-img:${BUILD_ID}"
-
 
 pipeline {
     agent any
     stages {
-       stage('Build and Package') {
-            steps {
-                script {
-                    node {
-                        def mvnHome = tool 'maven-3.9.5'
-                        def dockerImage = 'spring-img'
-                        def dockerImageTag = "chetouiiftikhar/spring-img:${BUILD_ID}"
+           stage('Clone Repo') {
+      git 'https://github.com/foufa102022/backind-spingboot.git'
+    }    
+       // stage('Build and Package') {
+       //      steps {
+       //          script {
+       //              node {
+       //                  def mvnHome = tool 'maven-3.9.5'
+       //                  def dockerImage = 'spring-img'
+       //                  def dockerImageTag = "chetouiiftikhar/spring-img:${BUILD_ID}"
 
-                        sh "cd Backend/crowdapp && ${mvnHome}/bin/mvn -DskipTests clean install --fail-at-end"
-                    }
-                }
-            }
-        }
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh "cd .. && docker rm -f back_container && docker build -t ${dockerImage} ."
-                }
-            }
-        }
-        stage('Tag and Push Docker Image') {
-            steps {
-                script {
-                    sh "docker tag ${dockerImage}:latest ${dockerImageTag}"
-                    sh "docker login -u chetouiiftikhar -p vitonicconception"
-                    sh "docker push ${dockerImageTag}"
-                }
-            }
-        }
-        stage('Run Docker Container') {
-            steps {
-                script {
-                    sh "docker run -p 8888:8080 -dit --name back_container ${dockerImageTag}"
-                }
-            }
-        }
+       //                  sh "cd Backend/crowdapp && ${mvnHome}/bin/mvn -DskipTests clean install --fail-at-end"
+       //              }
+       //          }
+       //      }
+       //  }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         script {
+        //             sh "cd .. && docker rm -f back_container && docker build -t ${dockerImage} ."
+        //         }
+        //     }
+        // }
+        // stage('Tag and Push Docker Image') {
+        //     steps {
+        //         script {
+        //             sh "docker tag ${dockerImage}:latest ${dockerImageTag}"
+        //             sh "docker login -u chetouiiftikhar -p vitonicconception"
+        //             sh "docker push ${dockerImageTag}"
+        //         }
+        //     }
+        // }
+        // stage('Run Docker Container') {
+        //     steps {
+        //         script {
+        //             sh "docker run -p 8888:8080 -dit --name back_container ${dockerImageTag}"
+        //         }
+        //     }
+        // }
     }
 }
-}
+
