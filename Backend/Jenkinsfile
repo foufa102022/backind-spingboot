@@ -10,7 +10,7 @@ pipeline {
                     //     def dockerImage = 'spring-img'
                     //     def dockerImageTag = "chetouiiftikhar/spring-img:${BUILD_ID}"
 
-                        sh "cd pipline-spring-test1/Backend/crowdapp && ${mvnHome}/bin/mvn -DskipTests clean install --fail-at-end"
+                        sh 'Backend/crowdapp && ./mvnw -DskipTests clean install --fail-at-end'
                     }
                 //}
             }
@@ -18,23 +18,23 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "cd .. && docker rm -f back_container && docker build -t ${dockerImage} ."
+                    sh 'cd .. && docker rm -f back_container && docker build -t spring-img_%BUILD_ID% .'
                 }
             }
         }
-        stage('Tag and Push Docker Image') {
-            steps {
-                script {
-                    sh "docker tag ${dockerImage}:latest ${dockerImageTag}"
-                    sh "docker login -u chetouiiftikhar -p vitonicconception"
-                    sh "docker push ${dockerImageTag}"
-                }
-            }
-        }
+        // stage('Tag and Push Docker Image') {
+        //     steps {
+        //         script {
+        //             sh "docker tag ${dockerImage}:latest ${dockerImageTag}"
+        //             sh "docker login -u *** -p *****"
+        //             sh "docker push ${dockerImageTag"
+        //         }
+        //     }
+        // }
         stage('Run Docker Container') {
             steps {
                 script {
-                    sh "docker run -p 8888:8080 -dit --name back_container ${dockerImageTag}"
+                    sh 'docker run -p 8888:8080 -dit --name back_container spring-img_%BUILD_ID%'
                 }
             }
         }
