@@ -7,10 +7,16 @@ node {
 pipeline {
     agent any
     stages {
-        stage('Build and Package') {
+       stage('Build and Package') {
             steps {
                 script {
-                    sh "cd Backend/crowdapp && ${mvnHome}/bin/mvn -DskipTests clean install --fail-at-end"
+                    node {
+                        def mvnHome = tool 'maven-3.9.5'
+                        def dockerImage = 'spring-img'
+                        def dockerImageTag = "chetouiiftikhar/spring-img:${BUILD_ID}"
+
+                        sh "cd Backend/crowdapp && ${mvnHome}/bin/mvn -DskipTests clean install --fail-at-end"
+                    }
                 }
             }
         }
