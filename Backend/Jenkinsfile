@@ -1,9 +1,5 @@
 pipeline {
     agent any 
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('DockerHub')
-    }
-
     stages {
         stage('Build and Package') {
             steps {
@@ -19,36 +15,20 @@ pipeline {
             steps {
                 script {
                     sh '''
-                       docker build -t spring-img .
+                       docker build -t spring-img Backend/crowdapp
                        docker tag spring-img:latest chetouiiftikhar/spring-img:${BUILD_ID}
                     '''
                 }
             }
         }
 
-        stage('Login to Docker Hub') {
-            steps {
-                script {
-                    sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    sh '''
-                        docker push chetouiiftikhar/spring-img:${BUILD_ID}
-                    '''
-                }
-            }
-        }
 
         stage('Deploy Docker Image') {
             steps {
                 script {
                     echo "Docker Container back_container deleting..."
                     sh "docker rm -f back_container"
+                     echo "Docker Container back_container creating..."
                     sh "docker run -p 8888:8080 -dit --name back_container chetouiiftikhar/spring-img:${BUILD_ID}"
                 }
             }
