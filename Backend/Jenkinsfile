@@ -9,10 +9,8 @@ pipeline {
                 git 'https://github.com/foufa102022/backind-spingboot.git'
             }
         }
-        // Ajoutez d'autres étapes au besoin
     }
 }
-
 
 
 //pipeline {
