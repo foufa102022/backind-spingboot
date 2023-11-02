@@ -2,7 +2,7 @@ node {
     def mvnHome = tool 'maven-3.9.5'
     def dockerImage = 'spring-img'
     def dockerImageTag = "chetouiiftikhar/spring-img:${BUILD_ID}"
-}
+
 
 pipeline {
     agent any
@@ -44,4 +44,5 @@ pipeline {
             }
         }
     }
+}
 }
