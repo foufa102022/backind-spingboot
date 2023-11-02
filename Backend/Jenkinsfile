@@ -7,7 +7,7 @@ pipeline {
                 dir('Backend/crowdapp') {
                     script {
                         // Exécuter la commande Maven pour construire le projet Spring Boot
-                        sh 'mvnw -DskipTests clean install --fail-at-end'
+                        sh './mvnw -DskipTests clean install --fail-at-end'
                     }
                 }
             }
@@ -17,7 +17,6 @@ pipeline {
             steps {
                 script {
                     // Exécuter la commande pour construire l'image Docker
-                    sh 'docker rm -f back_container && true' // Supprimer le conteneur Docker s'il existe
                     sh 'docker build -t spring-img .'
                 }
             }
@@ -27,7 +26,9 @@ pipeline {
             steps {
                 script {
                     // Exécuter la commande pour exécuter un conteneur Docker
-                    sh 'docker run -p 8888:8080 -dit --name back_container chetouiiftikhar/spring-img:$BUILD_ID'
+                    echo "Docker Container back_container deleting..."
+                    sh "docker rm -f back_container && true" // Supprimer le conteneur Docker s'il existe
+                    sh 'docker run -p 8888:8080 -dit --name back_container spring-img:latest'
                 }
             }
         }
