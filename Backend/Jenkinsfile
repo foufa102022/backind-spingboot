@@ -7,7 +7,7 @@ pipeline {
                 dir('Backend/crowdapp') {
                     script {
                         // Exécuter la commande Maven pour construire le projet Spring Boot
-                        sh './mvnw -DskipTests clean install --fail-at-end'
+                        sh './mvnw  clean install '
                     }
                 }
             }
