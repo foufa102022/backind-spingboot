@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Build and Package') {
             steps {
-                dir('Backend/crowdapp') {
                     script {
                         // Exécuter la commande Maven pour construire le projet Spring Boot
                         sh 'Backend/crowdapp/mvnw  clean install '
