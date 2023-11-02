@@ -1,37 +1,40 @@
+def mvnHome = tool 'maven-3.9.4'
+def dockerImage = 'spring-img'
+def dockerImageTag = "chetouiiftikhar/spring-img:${BUILD_ID}"
+
 pipeline {
     agent any
-      def mvnHome = tool 'maven-3.9.5'
+
     stages {
         stage('Build and Package') {
             steps {
-                    script {
-                        // Exécuter la commande Maven pour construire le projet Spring Boot
-                        //  sh 'cd Backend/crowdapp'
-                       //   sh 'ls'
-                        //  sh './mvnw  clean install'
-                          sh cd /backend/crowdapp
-                          sh "'${mvnHome}/bin/mvn' -B -DskipTests clean install"
-                    }
+                script {
+                    sh "cd Backend/crowdapp && ${mvnHome}/bin/mvn -DskipTests clean install --fail-at-end"
                 }
             }
-       // stage('Build Docker Image') {
-         //   steps {
-//script {
-                    // Exécuter la commande pour construire l'image Docker
-                 //   sh 'docker build -t spring-img .'
-//}
-           // }
-      //  }
-
-       // stage('Deploy Docker Image') {
-           // steps {
-             //   script {
-                    // Exécuter la commande pour exécuter un conteneur Docker
-                  //  echo "Docker Container back_container deleting..."
-                  //  sh "docker rm -f back_container && true" // Supprimer le conteneur Docker s'il existe
-                  //  sh 'docker run -p 8888:8080 -dit --name back_container spring-img:latest'
-//}
-           // }
-       //}
-   }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "cd .. && docker rm -f back_container && docker build -t ${dockerImage} ."
+                }
+            }
+        }
+        stage('Tag and Push Docker Image') {
+            steps {
+                script {
+                    sh "docker tag ${dockerImage}:latest ${dockerImageTag}"
+                    sh "docker login -u chetouiiftikhar -p vitonicconception"
+                    sh "docker push ${dockerImageTag}"
+                }
+            }
+        }
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    sh "docker run -p 8888:8080 -dit --name back_container ${dockerImageTag}"
+                }
+            }
+        }
+    }
 }
