@@ -3,6 +3,13 @@ node {
 
 pipeline {
     agent any
+     environment {
+        // Définir JAVA_HOME avec l'emplacement de l'installation Java
+        JAVA_HOME = "C:\\Program Files\\Java\\jdk-17"
+        // Ajouter Java au PATH
+        PATH = "${JAVA_HOME}\\bin:${PATH}"
+    }
+
 
     stages {
         stage('Checkout') {
@@ -26,6 +33,7 @@ pipeline {
             }
         }
  }
+}
 }
 
 
