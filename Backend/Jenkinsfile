@@ -1,6 +1,4 @@
-node {
-    def mvnHome = tool 'maven-3.9.5'
-}
+
 pipeline {
     agent any
 
@@ -9,6 +7,8 @@ pipeline {
         JAVA_HOME = "C:\\Program Files\\Java\\jdk-17"
         // Ajouter Java au PATH
         PATH = "${JAVA_HOME}\\bin:${PATH}"
+        // Définir le chemin de Docker
+         DOCKER_PATH = "C:\\Program Files\\Docker\\cli-plugins"
         // Utilisez les informations d'identification Docker Hub en tant que variable d'environnement
         DOCKERHUB_CREDENTIALS = credentials('DockerHub')
     }
@@ -40,20 +40,15 @@ pipeline {
                 script {
                     // Revenez au répertoire parent
                     bat 'cd ..'
-
+                         // Connectez-vous à Docker Hub en utilisant les informations d'identification stockées dans la variable d'environnement
+                    bat "docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}"
                     // Supprimez le conteneur Docker existant
                     //bat 'docker rm -f back_container'
-
                     // Construisez l'image Docker
                     bat 'docker --version'
                     bat 'docker build -t spring-img .'
-
                     // Étiquetez l'image Docker avec le numéro de version de la construction (%BUILD_ID%)
-                    bat "docker tag spring-img:latest chetouiiftikhar/spring-img:%BUILD_ID%"
-
-                    // Connectez-vous à Docker Hub en utilisant les informations d'identification stockées dans la variable d'environnement
-                    bat "docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}"
-
+                    bat "docker tag spring-img:latest chetouiiftikhar/spring-img:%BUILD_ID%
                     // Poussez l'image Docker vers Docker Hub
                     bat "docker push chetouiiftikhar/spring-img:%BUILD_ID%"
                 }
