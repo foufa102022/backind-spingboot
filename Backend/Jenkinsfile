@@ -39,7 +39,6 @@ pipeline {
             steps {
                 script {
                     // Revenez au répertoire parent
-                    // bat 'cd ..'
                     bat 'dir'
                     dir('Backend'){
                          // Connectez-vous à Docker Hub en utilisant les informations d'identification stockées dans la variable d'environnement
@@ -56,6 +55,15 @@ pipeline {
                 }}
             }
         }
+        stage('Run Docker Container') {
+    steps {
+        script {
+            // Exécutez le conteneur Docker en utilisant l'image  construite 
+            bat "docker run -d -p 8888:8080 --name backend_cont$_{BUILD_ID} chetouiiftikhar/spring-img:${BUILD_ID}"
+        }
+    }
+}
+
     }
 }
 
