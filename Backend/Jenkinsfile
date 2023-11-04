@@ -59,7 +59,7 @@ pipeline {
             steps {
                 script {
                         // Exécutez le conteneur Docker en utilisant l'image  construite 
-                        bat "docker run -d -p 8888:8080 --name backend_cont$_{BUILD_ID} chetouiiftikhar/spring-img:${BUILD_ID}"
+                        bat "docker run -d -p 8888:8080 --name backend_cont_${BUILD_ID} chetouiiftikhar/spring-img:${BUILD_ID}"
                                  }
     }
 }
