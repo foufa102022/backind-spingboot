@@ -42,7 +42,7 @@ pipeline {
                     bat 'cd ..'
 
                     // Supprimez le conteneur Docker existant
-                    bat 'docker rm -f back_container'
+                    //bat 'docker rm -f back_container'
 
                     // Construisez l'image Docker
                     bat 'docker build -t spring-img .'
