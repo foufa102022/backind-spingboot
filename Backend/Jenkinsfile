@@ -45,6 +45,7 @@ pipeline {
                     //bat 'docker rm -f back_container'
 
                     // Construisez l'image Docker
+                    bat 'docker --version'
                     bat 'docker build -t spring-img .'
 
                     // Étiquetez l'image Docker avec le numéro de version de la construction (%BUILD_ID%)
