@@ -39,8 +39,9 @@ pipeline {
             steps {
                 script {
                     // Revenez au répertoire parent
-                    bat 'cd ..'
+                    // bat 'cd ..'
                     bat 'dir'
+                    dir('Backend'){
                          // Connectez-vous à Docker Hub en utilisant les informations d'identification stockées dans la variable d'environnement
                     bat "docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}"
                     // Supprimez le conteneur Docker existant
@@ -52,7 +53,7 @@ pipeline {
                     bat "docker tag spring-img:latest chetouiiftikhar/spring-img:%BUILD_ID%"
                     // Poussez l'image Docker vers Docker Hub
                     bat "docker push chetouiiftikhar/spring-img:%BUILD_ID%"
-                }
+                }}
             }
         }
     }
